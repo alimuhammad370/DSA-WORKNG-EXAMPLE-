@@ -1,0 +1,85 @@
+class Node {
+    int data;
+    Node prev, next;
+
+    Node(int data) {
+        this.data = data;
+    }
+}
+
+class CircularDoublyLinkedList {
+    Node head;
+
+    public void append(int data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            head = newNode;
+            head.next = head;
+            head.prev = head;
+            return;
+        }
+        Node tail = head.prev;
+        tail.next = newNode;
+        newNode.prev = tail;
+        newNode.next = head;
+        head.prev = newNode;
+    }
+
+    public void deleteAtPosition(int position) {
+        if (head == null || position < 1) return;
+
+        Node current = head;
+        int count = 1;
+        while (count < position && current.next != head) {
+            current = current.next;
+            count++;
+        }
+
+        if (current == head && current.next == head) {
+            head = null;
+            return;
+        }
+
+        if (current == head) {
+            head = head.next;
+        }
+
+        current.prev.next = current.next;
+        current.next.prev = current.prev;
+    }
+
+    public void display() {
+        if (head == null) return;
+        Node current = head;
+        do {
+            System.out.print(current.data + " ");
+            current = current.next;
+        } while (current != head);
+        System.out.println();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        CircularDoublyLinkedList cll = new CircularDoublyLinkedList();
+        cll.append(10);
+        cll.append(20);
+        cll.append(30);
+        cll.append(40);
+
+        System.out.println("Original list:");
+        cll.display();
+
+        cll.deleteAtPosition(2);
+        System.out.println("After deleting node at position 2:");
+        cll.display();
+
+        cll.deleteAtPosition(1);
+        System.out.println("After deleting node at position 1:");
+        cll.display();
+
+        cll.deleteAtPosition(5);
+        System.out.println("After attempting to delete at an invalid position:");
+        cll.display();
+    }
+}
